@@ -1,0 +1,2 @@
+
+This is a script in which you can ecrypt files with a secret key and after that you can decrypt it back.
