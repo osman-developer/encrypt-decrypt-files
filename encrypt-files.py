@@ -15,7 +15,7 @@ def load_key():
     return open("key.key", "rb").read()
 
 # generate and write a new key
-write_key()
+write_key() 
 
 # load the previously generated key
 key = load_key()
@@ -36,10 +36,47 @@ decrypted_encrypted = f.decrypt(encrypted)
 print(decrypted_encrypted)
 
 # encrypt a file
+
 def encrypt(filename, key):
     """
     Given a filename (str) and key (bytes), it encrypts the file and write it
     """
     f = Fernet(key)
+	with open(filename, "rb") as file:
 
-    
+    file_data = file.read()
+
+  # encrypt data
+    encrypted_data = f.encrypt(file_data)    
+   
+ # write the encrypted file
+    with open(filename, "wb") as file:
+     file.write(encrypted_data)    
+
+# decrypt thee file
+def decrypt(filename, key):
+    """
+    Given a filename (str) and key (bytes), it decrypts the file and write it
+    """
+    f = Fernet(key)
+    with open(filename, "rb") as file:
+        # read the encrypted data
+        encrypted_data = file.read()
+    # decrypt data
+    decrypted_data = f.decrypt(encrypted_data)
+    # write the original file
+    with open(filename, "wb") as file:
+       file.write(decrypted_data)
+
+
+# uncomment this if it's the first time you run the code, to generate the key
+# write_key()
+# load the key
+key = load_key()
+# file name
+file = "Read.txt"
+# encrypt it
+encrypt(file, key)
+
+# decrypt the file
+decrypt(file, key)        
