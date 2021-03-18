@@ -34,3 +34,12 @@ print(encrypted)
 
 decrypted_encrypted = f.decrypt(encrypted)
 print(decrypted_encrypted)
+
+# encrypt a file
+def encrypt(filename, key):
+    """
+    Given a filename (str) and key (bytes), it encrypts the file and write it
+    """
+    f = Fernet(key)
+
+    
