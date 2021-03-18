@@ -14,46 +14,20 @@ def load_key():
     """
     return open("key.key", "rb").read()
 
-# generate and write a new key
-write_key() 
-
-# load the previously generated key
-key = load_key()
-
-message = "some secret message".encode()
-
-# initialize the Fernet class
-f = Fernet(key)
-
-
-# encrypt the message
-encrypted = f.encrypt(message)
-
-# print how it looks
-print(encrypted)
-
-decrypted_encrypted = f.decrypt(encrypted)
-print(decrypted_encrypted)
-
-# encrypt a file
-
 def encrypt(filename, key):
     """
     Given a filename (str) and key (bytes), it encrypts the file and write it
     """
     f = Fernet(key)
-	with open(filename, "rb") as file:
-
-    file_data = file.read()
-
-  # encrypt data
-    encrypted_data = f.encrypt(file_data)    
-   
- # write the encrypted file
+    with open(filename, "rb") as file:
+        # read all file data
+        file_data = file.read()
+    # encrypt data
+    encrypted_data = f.encrypt(file_data)
+    # write the encrypted file
     with open(filename, "wb") as file:
-     file.write(encrypted_data)    
+        file.write(encrypted_data)
 
-# decrypt thee file
 def decrypt(filename, key):
     """
     Given a filename (str) and key (bytes), it decrypts the file and write it
@@ -66,17 +40,37 @@ def decrypt(filename, key):
     decrypted_data = f.decrypt(encrypted_data)
     # write the original file
     with open(filename, "wb") as file:
-       file.write(decrypted_data)
+        file.write(decrypted_data)
 
 
-# uncomment this if it's the first time you run the code, to generate the key
-# write_key()
-# load the key
-key = load_key()
-# file name
-file = "Read.txt"
-# encrypt it
-encrypt(file, key)
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Simple File Encryptor Script")
+    parser.add_argument("file", help="File to encrypt/decrypt")
+    parser.add_argument("-g", "--generate-key", dest="generate_key", action="store_true",
+                        help="Whether to generate a new key or use existing")
+    parser.add_argument("-e", "--encrypt", action="store_true",
+                        help="Whether to encrypt the file, only -e or -d can be specified.")
+    parser.add_argument("-d", "--decrypt", action="store_true",
+                        help="Whether to decrypt the file, only -e or -d can be specified.")
 
-# decrypt the file
-decrypt(file, key)        
+    args = parser.parse_args()
+    file = args.file
+    generate_key = args.generate_key
+
+    if generate_key:
+        write_key()
+    # load the key
+    key = load_key()
+
+    encrypt_ = args.encrypt
+    decrypt_ = args.decrypt
+
+    if encrypt_ and decrypt_:
+        raise TypeError("Please specify whether you want to encrypt the file or decrypt it.")
+    elif encrypt_:
+        encrypt(file, key)
+    elif decrypt_:
+        decrypt(file, key)
+    else:
+        raise TypeError("Please specify whether you want to encrypt the file or decrypt it.")
